@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cavora Coffee — Frisch geröstet</title>
+<meta name="description" content="Cavora Coffee — frisch geröstet, von Hand gebrüht. Erlebe Kaffee in einer neuen Dimension." />
+<style>
+  :root{
+    --espresso:#1c0f0a;
+    --bean:#2b160d;
+    --crema:#c98a4b;
+    --crema-light:#e9b878;
+    --milk:#f6e7d3;
+    --cream:#fff6ea;
+    --accent:#ff8c42;
+    --shadow:rgba(20,9,4,.55);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    font-family:'Georgia','Times New Roman',serif;
+    background:
+      radial-gradient(circle at 70% 20%, #3a1d10 0%, transparent 55%),
+      radial-gradient(circle at 20% 90%, #2a130a 0%, transparent 60%),
+      linear-gradient(160deg,#1c0f0a 0%,#130905 100%);
+    color:var(--cream);
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;text-decoration:none}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    height:100svh;
+    width:100%;
+    overflow:hidden;
+  }
+  #scene{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    display:block;
+    z-index:1;
+  }
+  .hero-overlay{
+    position:absolute;
+    inset:0;
+    z-index:2;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding:0 6vw;
+    pointer-events:none;
+  }
+  .badge{
+    pointer-events:auto;
+    font-family:'Helvetica Neue',Arial,sans-serif;
+    font-size:.72rem;
+    letter-spacing:.45em;
+    text-transform:uppercase;
+    color:var(--crema-light);
+    border:1px solid rgba(233,184,120,.35);
+    border-radius:999px;
+    padding:.6em 1.4em;
+    margin-bottom:1.6rem;
+    backdrop-filter:blur(6px);
+    background:rgba(28,15,10,.25);
+    opacity:0;
+    transform:translateY(20px);
+    animation:rise .9s .2s ease forwards;
+  }
+  .hero h1{
+    font-size:clamp(2.8rem,9vw,7.5rem);
+    font-weight:400;
+    line-height:.95;
+    letter-spacing:-.02em;
+    text-shadow:0 12px 40px var(--shadow);
+    opacity:0;
+    transform:translateY(28px);
+    animation:rise 1s .35s ease forwards;
+  }
+  .hero h1 .accent{
+    display:block;
+    background:linear-gradient(90deg,var(--crema-light),var(--accent),var(--crema-light));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    font-style:italic;
+  }
+  .hero p.slogan{
+    font-family:'Helvetica Neue',Arial,sans-serif;
+    font-size:clamp(1rem,2.4vw,1.5rem);
+    letter-spacing:.32em;
+    text-transform:uppercase;
+    margin-top:1.6rem;
+    color:var(--milk);
+    opacity:0;
+    transform:translateY(24px);
+    animation:rise 1s .55s ease forwards;
+  }
+  .cta-row{
+    pointer-events:auto;
+    margin-top:2.6rem;
+    display:flex;
+    gap:1rem;
+    flex-wrap:wrap;
+    justify-content:center;
+    opacity:0;
+    transform:translateY(24px);
+    animation:rise 1s .75s ease forwards;
+  }
+  .btn{
+    font-family:'Helvetica Neue',Arial,sans-serif;
+    font-size:.82rem;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    padding:1.05em 2.1em;
+    border-radius:999px;
+    cursor:pointer;
+    border:1px solid transparent;
+    transition:transform .3s ease, box-shadow .3s ease, background .3s ease;
+  }
+  .btn-primary{
+    background:linear-gradient(120deg,var(--accent),var(--crema));
+    color:#1c0f0a;
+    font-weight:700;
+    box-shadow:0 14px 38px rgba(255,140,66,.35);
+  }
+  .btn-primary:hover{transform:translateY(-3px);box-shadow:0 20px 48px rgba(255,140,66,.5)}
+  .btn-ghost{
+    background:rgba(246,231,211,.06);
+    border-color:rgba(233,184,120,.4);
+    color:var(--cream);
+    backdrop-filter:blur(6px);
+  }
+  .btn-ghost:hover{transform:translateY(-3px);background:rgba(246,231,211,.14)}
+
+  .scroll-hint{
+    position:absolute;
+    bottom:2rem;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:2;
+    font-family:'Helvetica Neue',Arial,sans-serif;
+    font-size:.65rem;
+    letter-spacing:.35em;
+    text-transform:uppercase;
+    color:rgba(246,231,211,.6);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:.7rem;
+    opacity:0;
+    animation:rise 1s 1.1s ease forwards;
+  }
+  .scroll-hint .line{
+    width:1px;height:42px;
+    background:linear-gradient(var(--crema-light),transparent);
+    animation:pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes rise{to{opacity:1;transform:translateY(0)}}
+  @keyframes pulse{0%,100%{opacity:.3;transform:scaleY(.6)}50%{opacity:1;transform:scaleY(1)}}
+
+  .loader{
+    position:absolute;inset:0;z-index:5;
+    background:linear-gradient(160deg,#1c0f0a,#130905);
+    display:flex;align-items:center;justify-content:center;
+    flex-direction:column;gap:1.4rem;
+    transition:opacity .8s ease;
+  }
+  .loader.hidden{opacity:0;pointer-events:none}
+  .bean-spin{
+    width:46px;height:46px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;
+    background:linear-gradient(135deg,var(--bean),var(--crema));
+    position:relative;animation:spin 1.4s linear infinite;
+  }
+  .bean-spin::after{content:"";position:absolute;inset:46% 8% 46% 8%;background:#130905;border-radius:50%}
+  .loader span{font-family:'Helvetica Neue',Arial,sans-serif;font-size:.7rem;letter-spacing:.4em;text-transform:uppercase;color:var(--crema-light)}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* ---------- SECTIONS ---------- */
+  section.content{
+    position:relative;
+    z-index:3;
+    padding:8rem 6vw;
+    max-width:1180px;
+    margin:0 auto;
+  }
+  .eyebrow{
+    font-family:'Helvetica Neue',Arial,sans-serif;
+    font-size:.72rem;letter-spacing:.4em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:1.2rem;
+  }
+  h2{
+    font-size:clamp(2rem,5vw,3.4rem);
+    font-weight:400;line-height:1.05;margin-bottom:1.4rem;
+  }
+  .lead{
+    font-family:'Helvetica Neue',Arial,sans-serif;
+    font-size:1.05rem;line-height:1.8;color:rgba(246,231,211,.8);
+    max-width:620px;
+  }
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:1.6rem;margin-top:3.5rem;
+  }
+  .card{
+    background:linear-gradient(160deg,rgba(43,22,13,.7),rgba(28,15,10,.5));
+    border:1px solid rgba(233,184,120,.14);
+    border-radius:22px;
+    padding:2.4rem 2rem;
+    transition:transform .35s ease, border-color .35s ease, box-shadow .35s ease;
+  }
+  .card:hover{transform:translateY(-6px);border-color:rgba(233,184,120,.4);box-shadow:0 24px 50px rgba(0,0,0,.4)}
+  .card .ico{font-size:2rem;margin-bottom:1.1rem}
+  .card h3{font-size:1.35rem;font-weight:400;margin-bottom:.7rem}
+  .card p{font-family:'Helvetica Neue',Arial,sans-serif;font-size:.92rem;line-height:1.7;color:rgba(246,231,211,.7)}
+
+  .menu-list{margin-top:3rem;border-top:1px solid rgba(233,184,120,.16)}
+  .menu-item{
+    display:flex;align-items:baseline;gap:1rem;
+    padding:1.4rem 0;border-bottom:1px solid rgba(233,184,120,.16);
+  }
+  .menu-item .name{font-size:1.25rem}
+  .menu-item .dots{flex:1;border-bottom:1px dotted rgba(233,184,120,.4);transform:translateY(-4px)}
+  .menu-item .price{font-family:'Helvetica Neue',Arial,sans-serif;color:var(--crema-light);font-size:1.05rem}
+  .menu-item .desc{display:block;font-family:'Helvetica Neue',Arial,sans-serif;font-size:.82rem;color:rgba(246,231,211,.55);margin-top:.3rem}
+
+  footer{
+    position:relative;z-index:3;
+    text-align:center;padding:5rem 6vw 3rem;
+    border-top:1px solid rgba(233,184,120,.16);
+    font-family:'Helvetica Neue',Arial,sans-serif;
+  }
+  footer .brand{font-family:Georgia,serif;font-size:1.6rem;letter-spacing:.1em;margin-bottom:.6rem}
+  footer .meta{font-size:.8rem;color:rgba(246,231,211,.55);line-height:1.9}
+  footer .sig{margin-top:1.8rem;font-size:.7rem;letter-spacing:.3em;text-transform:uppercase;color:rgba(246,231,211,.35)}
+
+  .reveal{opacity:0;transform:translateY(40px);transition:opacity .8s ease, transform .8s ease}
+  .reveal.in{opacity:1;transform:translateY(0)}
+
+  @media (prefers-reduced-motion:reduce){
+    *{animation-duration:.001ms!important;transition-duration:.001ms!important}
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <canvas id="scene"></canvas>
+
+  <div class="loader" id="loader">
+    <div class="bean-spin"></div>
+    <span>frisch wird geröstet…</span>
+  </div>
+
+  <div class="hero-overlay">
+    <div class="badge">Handgeröstet · Seit 2024</div>
+    <h1>Cavora Coffee<span class="accent">Frisch geröstet</span></h1>
+    <p class="slogan">Bohne · Brühung · Genuss</p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="#menu">Menü entdecken</a>
+      <a class="btn btn-ghost" href="#story">Unsere Rösterei</a>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <span>scrollen</span>
+    <span class="line"></span>
+  </div>
+</div>
+
+<section class="content" id="story">
+  <p class="eyebrow reveal">Unsere Philosophie</p>
+  <h2 class="reveal">Jede Tasse beginnt<br>mit der perfekten Bohne.</h2>
+  <p class="lead reveal">Wir rösten in kleinen Chargen, langsam und mit Hingabe. So entfalten sich die feinen Aromen von Karamell, dunkler Schokolade und reifen Früchten — Tag für Tag frisch, niemals auf Vorrat.</p>
+
+  <div class="grid">
+    <div class="card reveal">
+      <div class="ico">🔥</div>
+      <h3>Langsame Röstung</h3>
+      <p>Bei moderaten Temperaturen über volle 14 Minuten — für maximale Süsse und null Bitterkeit.</p>
+    </div>
+    <div class="card reveal">
+      <div class="ico">🌍</div>
+      <h3>Direkter Handel</h3>
+      <p>Wir kaufen direkt von Farmen in Äthiopien, Kolumbien und Guatemala — fair und transparent.</p>
+    </div>
+    <div class="card reveal">
+      <div class="ico">☕</div>
+      <h3>Barista-Handwerk</h3>
+      <p>Jeder Espresso wird frisch gemahlen, präzise dosiert und mit Liebe extrahiert.</p>
+    </div>
+  </div>
+</section>
+
+<section class="content" id="menu">
+  <p class="eyebrow reveal">Die Karte</p>
+  <h2 class="reveal">Unsere Favoriten</h2>
+  <div class="menu-list">
+    <div class="menu-item reveal">
+      <span class="name">Espresso «Cavora»<span class="desc">Vollmundig, mit feiner Crema</span></span>
+      <span class="dots"></span><span class="price">CHF 4.50</span>
+    </div>
+    <div class="menu-item reveal">
+      <span class="name">Flat White<span class="desc">Doppelter Espresso, samtige Milch</span></span>
+      <span class="dots"></span><span class="price">CHF 5.80</span>
+    </div>
+    <div class="menu-item reveal">
+      <span class="name">Cold Brew 18h<span class="desc">Sanft, fruchtig, eiskalt</span></span>
+      <span class="dots"></span><span class="price">CHF 6.20</span>
+    </div>
+    <div class="menu-item reveal">
+      <span class="name">Filter des Tages<span class="desc">Wechselnde Single Origin</span></span>
+      <span class="dots"></span><span class="price">CHF 5.50</span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="brand">Cavora Coffee</div>
+  <p class="meta">Bahnhofstrasse 12 · 8001 Zürich<br>Mo–Fr 7–19 Uhr · Sa/So 8–18 Uhr</p>
+  <p class="sig">Frisch geröstet — jeden Morgen.</p>
+</footer>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+
+const canvas = document.getElementById('scene');
+const loader = document.getElementById('loader');
+const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.15;
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0x130905, 0.045);
+
+const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+camera.position.set(0, 1.2, 9);
+
+// ---------- LIGHTS (warm) ----------
+const key = new THREE.DirectionalLight(0xffd9a0, 2.6);
+key.position.set(5, 6, 5);
+scene.add(key);
+
+const rim = new THREE.DirectionalLight(0xff8c42, 1.8);
+rim.position.set(-6, 2, -4);
+scene.add(rim);
+
+const fill = new THREE.PointLight(0xe9b878, 1.4, 30);
+fill.position.set(0, 3, 4);
+scene.add(fill);
+
+scene.add(new THREE.AmbientLight(0x3a1d10, 1.0));
+scene.add(new THREE.HemisphereLight(0xffcaa0, 0x1c0f0a, 0.6));
+
+// ---------- GROUP (everything rotates together) ----------
+const group = new THREE.Group();
+scene.add(group);
+
+// Materials
+const ceramicMat = new THREE.MeshStandardMaterial({
+  color:0xf6e7d3, roughness:0.35, metalness:0.05
+});
+const ceramicInner = new THREE.MeshStandardMaterial({
+  color:0xe9b878, roughness:0.5, metalness:0.05, side:THREE.DoubleSide
+});
+const coffeeMat = new THREE.MeshStandardMaterial({
+  color:0x3a1d0c, roughness:0.25, metalness:0.1
+});
+const beanMat = new THREE.MeshStandardMaterial({
+  color:0x2b160d, roughness:0.45, metalness:0.1
+});
+
+// ---------- COFFEE CUP (lathe geometry) ----------
+const cupProfile = [];
+const pts = [
+  [0.0, 0.0],[0.9, 0.0],[0.92,0.05],[1.0,0.18],
+  [1.15,0.7],[1.22,1.35],[1.24,1.5],[1.18,1.5],
+  [1.16,1.36],[1.08,0.72],[0.95,0.2],[0.0,0.2]
+];
+pts.forEach(p=>cupProfile.push(new THREE.Vector2(p[0],p[1])));
+const cupGeo = new THREE.LatheGeometry(cupProfile, 64);
+const cup = new THREE.Mesh(cupGeo, ceramicMat);
+cup.position.y = -0.9;
+group.add(cup);
+
+// inner cup surface
+const innerGeo = new THREE.CylinderGeometry(1.12, 0.92, 1.3, 64, 1, true);
+const inner = new THREE.Mesh(innerGeo, ceramicInner);
+inner.position.y = -0.25;
+group.add(inner);
+
+// coffee surface
+const coffeeGeo = new THREE.CircleGeometry(1.12, 64);
+const coffee = new THREE.Mesh(coffeeGeo, coffeeMat);
+coffee.rotation.x = -Math.PI/2;
+coffee.position.y = 0.32;
+group.add(coffee);
+
+// crema ring
+const cremaGeo = new THREE.RingGeometry(0.55, 1.1, 64);
+const cremaMat = new THREE.MeshStandardMaterial({ color:0xc98a4b, roughness:0.4, side:THREE.DoubleSide });
+const crema = new THREE.Mesh(cremaGeo, cremaMat);
+crema.rotation.x = -Math.PI/2;
+crema.position.y = 0.325;
+group.add(crema);
+
+// handle (torus segment)
+const handle = new THREE.Mesh(
+  new THREE.TorusGeometry(0.55, 0.13, 24, 48, Math.PI*1.2),
+  ceramicMat
+);
+handle.position.set(1.25, -0.35, 0);
+handle.rotation.z = -Math.PI*0.18;
+group.add(handle);
+
+// saucer
+const saucer = new THREE.Mesh(
+  new THREE.CylinderGeometry(2.0, 1.7, 0.16, 64),
+  ceramicMat
+);
+saucer.position.y = -1.05;
+group.add(saucer);
+
+// ---------- STEAM (curling particle ribbons) ----------
+const steamCount = 320;
+const steamGeo = new THREE.BufferGeometry();
+const sPos = new Float32Array(steamCount*3);
+const sData = []; // {x,z,speed,phase,radius}
+for(let i=0;i<steamCount;i++){
+  const r = Math.random()*0.6;
+  const a = Math.random()*Math.PI*2;
+  sData.push({
+    baseX: Math.cos(a)*r,
+    baseZ: Math.sin(a)*r,
+    speed: 0.4+Math.random()*0.6,
+    phase: Math.random()*Math.PI*2,
+    life: Math.random()
+  });
+}
+steamGeo.setAttribute('position', new THREE.BufferAttribute(sPos,3));
+const steamMat = new THREE.PointsMaterial({
+  color:0xf6e7d3, size:0.09, transparent:true, opacity:0.5,
+  depthWrite:false, blending:THREE.AdditiveBlending
+});
+const steam = new THREE.Points(steamGeo, steamMat);
+steam.position.y = 0.35;
+group.add(steam);
+
+// ---------- FLOATING BEANS ----------
+function makeBean(){
+  const g = new THREE.SphereGeometry(1, 24, 18);
+  const pos = g.attributes.position;
+  const v = new THREE.Vector3();
+  for(let i=0;i<pos.count;i++){
+    v.fromBufferAttribute(pos,i);
+    v.x *= 0.62; v.z *= 0.62; // flatten into bean shape
+    pos.setXYZ(i, v.x, v.y, v.z);
+  }
+  g.computeVertexNormals();
+  const m = new THREE.Mesh(g, beanMat);
+  // crease
+  const crease = new THREE.Mesh(
+    new THREE.TorusGeometry(0.45, 0.02, 8, 40),
+    new THREE.MeshStandardMaterial({color:0x140905, roughness:0.7})
+  );
+  crease.rotation.x = Math.PI/2;
+  crease.scale.set(1,0.62,1);
+  m.add(crease);
+  return m;
+}
+const beans = [];
+for(let i=0;i<7;i++){
+  const b = makeBean();
+  const s = 0.28+Math.random()*0.22;
+  b.scale.setScalar(s);
+  const ang = (i/7)*Math.PI*2;
+  const rad = 3.4+Math.random()*1.4;
+  b.userData = {
+    ang, rad,
+    y: -0.5+Math.random()*3,
+    rotSpeed:(Math.random()-0.5)*1.2,
+    floatSpeed:0.3+Math.random()*0.5,
+    floatPhase:Math.random()*Math.PI*2
+  };
+  b.position.set(Math.cos(ang)*rad, b.userData.y, Math.sin(ang)*rad);
+  scene.add(b);
+  beans.push(b);
+}
+
+// ---------- POINTER PARALLAX ----------
+const pointer = {x:0, y:0, tx:0, ty:0};
+window.addEventListener('pointermove', e=>{
+  pointer.tx = (e.clientX/window.innerWidth - 0.5);
+  pointer.ty = (e.clientY/window.innerHeight - 0.5);
+});
+
+// ---------- RESIZE ----------
+function resize(){
+  const w = canvas.clientWidth, h = canvas.clientHeight;
+  if(canvas.width!==w || canvas.height!==h){
+    renderer.setSize(w, h, false);
+    camera.aspect = w/h;
+    camera.updateProjectionMatrix();
+  }
+}
+const ro = new ResizeObserver(resize);
+ro.observe(canvas);
+
+// ---------- INTRO CAMERA FLY ----------
+function easeInOutCubic(t){ return t<0.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2; }
+const camFrom = new THREE.Vector3(0, 5.5, 13);
+const camTo   = new THREE.Vector3(0, 1.2, 8.2);
+camera.position.copy(camFrom);
+let introStart = null;
+const introDur = 2600;
+
+// ---------- ANIMATE ----------
+const clock = new THREE.Clock();
+function animate(now){
+  const t = clock.getElapsedTime();
+  const dt = Math.min(clock.getDelta(), 0.05);
+
+  // intro fly
+  if(!prefersReduced){
+    if(introStart===null) introStart = now;
+    const p = Math.min((now-introStart)/introDur, 1);
+    const e = easeInOutCubic(p);
+    camera.position.lerpVectors(camFrom, camTo, e);
+  } else {
+    camera.position.copy(camTo);
+  }
+
+  // pointer parallax (after intro mostly settled)
+  pointer.x += (pointer.tx - pointer.x)*0.05;
+  pointer.y += (pointer.ty - pointer.y)*0.05;
+  camera.position.x = camTo.x + pointer.x*1.4;
+  camera.position.y = THREE.MathUtils.clamp(camera.position.y + pointer.y*0.6, 0.4, 6);
+  camera.lookAt(0, 0.1, 0);
+
+  // rotate the cup group
+  group.rotation.y += dt*0.35;
+  group.position.y = Math.sin(t*0.8)*0.08;
+
+  // steam update
+  const arr = steamGeo.attributes.position.array;
+  for(let i=0;i<steamCount;i++){
+    const d = sData[i];
+    d.life += dt*d.speed*0.18;
+    if(d.life>1) d.life -= 1;
+    const h = d.life*3.4;
+    const sway = Math.sin(d.phase + d.life*6.0)*0.35*d.life;
+    const spread = 1 + d.life*1.6;
+    arr[i*3]   = d.baseX*spread + sway;
+    arr[i*3+1] = h;
+    arr[i*3+2] = d.baseZ*spread + Math.cos(d.phase + d.life*5.0)*0.3*d.life;
+  }
+  steamGeo.attributes.position.needsUpdate = true;
+  steamMat.opacity = 0.45;
+
+  // beans float + rotate
+  beans.forEach(b=>{
+    const u = b.userData;
+    b.rotation.x += dt*u.rotSpeed;
+    b.rotation.y += dt*u.rotSpeed*0.7;
+    b.position.y = u.y + Math.sin(t*u.floatSpeed + u.floatPhase)*0.5;
+    u.ang += dt*0.1;
+    b.position.x = Math.cos(u.ang)*u.rad;
+    b.position.z = Math.sin(u.ang)*u.rad;
+  });
+
+  // subtle light flicker (cozy)
+  fill.intensity = 1.4 + Math.sin(t*2.0)*0.15;
+
+  resize();
+  renderer.render(scene, camera);
+  requestAnimationFrame(animate);
+}
+
+// first frame render immediately, then loop
+resize();
+renderer.render(scene, camera);
+requestAnimationFrame(animate);
+
+// hide loader once running
+requestAnimationFrame(()=>{
+  setTimeout(()=>loader.classList.add('hidden'), 400);
+});
+
+// ---------- SCROLL REVEAL ----------
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); }});
+},{threshold:0.15});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
